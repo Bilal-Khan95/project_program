@@ -1,0 +1,26 @@
+import sys, re
+fasta_file=sys.argv[1]
+tab_file=sys.argv[2]
+gene_coords=[]
+for line in open(tab_file):
+    f2=line.split()
+	start_position=f2[1]
+	end_position=f2[2]
+	gene_length= int(end_position) - int(start_position)
+
+for line in open(fasta_file):
+    f=line.split()
+	length=len(f[1])
+	length +=1
+	total_g4s=0
+	g4s=[]
+	mobj=re.finditer(r'((G{3,6}[N]{1,7}){3}G{3,6})', line)
+	for match in mobj:
+	  run_start = match.start()
+	  run_end = match.end()
+	  g4s_length = int(run_end) - int(run_start)
+	  g4s.append(g4s_length)
+	  total_g4s += 1
+	  print 'G-Quadruplex at position',str(run_start), 'to', str(run_end), 'G-Quadruplex length is:', g4s_length
+
+print total_g4s, length
